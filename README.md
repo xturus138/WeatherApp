@@ -1,4 +1,2 @@
 # WeatherApp
-# WeatherApp
-
-nyobaaaa
+# Still in development maybe 1 month done
