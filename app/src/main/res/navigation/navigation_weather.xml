@@ -7,17 +7,17 @@
 
     <fragment
         android:id="@+id/navigation_home"
-        android:name="com.example.weatherapp.HomeFragment"
+        android:name="com.example.weatherapp.ui.home.HomeFragment"
         android:label="HomeFragment"
         tools:layout="@layout/fragment_home"/>
     <fragment
         android:id="@+id/navigation_forecast"
-        android:name="com.example.weatherapp.ForecastFragment"
+        android:name="com.example.weatherapp.ui.forecast.ForecastFragment"
         android:label="fragment_forecast"
         tools:layout="@layout/fragment_forecast" />
     <fragment
         android:id="@+id/navigation_history"
-        android:name="com.example.weatherapp.HistoryFragment"
+        android:name="com.example.weatherapp.ui.history.HistoryFragment"
         android:label="fragment_history"
         tools:layout="@layout/fragment_history" />
 </navigation>
