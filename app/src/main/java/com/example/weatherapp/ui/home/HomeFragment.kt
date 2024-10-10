@@ -49,12 +49,7 @@ class HomeFragment : Fragment() {
         binding.swipeRefresh.setOnRefreshListener {
             binding.apply {
                 progressHome.visibility = View.VISIBLE
-                tempMin.visibility = View.GONE
-                tempMax.visibility = View.GONE
-                detailsContainer.visibility = View.GONE
-                temp.visibility = View.GONE
-                status.visibility = View.GONE
-                addressContainer.visibility = View.GONE
+                hideUi()
             }
             getLocation(apiKey)
             Timber.d("Swipe Refresh")
@@ -123,12 +118,7 @@ class HomeFragment : Fragment() {
                 Timber.d("weatherResponse True")
                 binding.apply {
                     progressHome.visibility = View.GONE
-                    tempMin.visibility = View.VISIBLE
-                    tempMax.visibility = View.VISIBLE
-                    detailsContainer.visibility = View.VISIBLE
-                    temp.visibility = View.VISIBLE
-                    status.visibility = View.VISIBLE
-                    addressContainer.visibility = View.VISIBLE
+                    visibleUi()
                     address.text = weatherResponse.location.name
                     //Timber.d("Check Address: ${binding.address.text} and Name: ${weatherResponse.location.name}")
                     updatedAt.text = weatherResponse.current.lastUpdated
@@ -143,6 +133,28 @@ class HomeFragment : Fragment() {
                 }
             }
 
+        }
+    }
+
+    private fun visibleUi(){
+        binding.apply {
+            tempMin.visibility = View.VISIBLE
+            tempMax.visibility = View.VISIBLE
+            detailsContainer.visibility = View.VISIBLE
+            temp.visibility = View.VISIBLE
+            status.visibility = View.VISIBLE
+            addressContainer.visibility = View.VISIBLE
+        }
+    }
+
+    private fun hideUi(){
+        binding.apply{
+            tempMin.visibility = View.GONE
+            tempMax.visibility = View.GONE
+            detailsContainer.visibility = View.GONE
+            temp.visibility = View.GONE
+            status.visibility = View.GONE
+            addressContainer.visibility = View.GONE
         }
     }
 }
