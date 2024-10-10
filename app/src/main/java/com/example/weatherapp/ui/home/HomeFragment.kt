@@ -1,24 +1,30 @@
 package com.example.weatherapp.ui.home
 
+import android.Manifest
+import android.content.Context
 import android.content.pm.PackageManager
 import android.location.Location
+import android.location.LocationManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.getSystemService
+import androidx.core.content.getSystemService
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.example.weatherapp.databinding.FragmentHomeBinding
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
 import timber.log.Timber
 
 class HomeFragment : Fragment() {
 
     private lateinit var binding: FragmentHomeBinding
     private val homeViewModel: HomeViewModel by viewModels()
-    private lateinit var mFusedLocationClient: FusedLocationProviderClient
+    private lateinit var locationManager: LocationManager
+    private val locationPermissionCode = 2
     private val apiKey = "8f589eb621634745aef75038240910"
 
     override fun onCreateView(
@@ -33,20 +39,47 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         Timber.plant(Timber.DebugTree())
         Timber.d("onViewCreated Running")
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
+
+
+
         binding.progressHome.visibility = View.VISIBLE
-        isLocationPermissionGranted()
+        getLocation(apiKey)
 
 
         binding.swipeRefresh.setOnRefreshListener {
-            isLocationPermissionGranted()
+            getLocation(apiKey)
             Timber.d("Swipe Refresh")
             binding.swipeRefresh.isRefreshing = false
         }
 
     }
 
-    fun getWeatherData(apiKey: String, location: String) {
+    private fun getLocation(apiKey: String) {
+        locationManager = requireContext().getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        if ((ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)) {
+            ActivityCompat.requestPermissions(requireActivity(), arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), locationPermissionCode)
+        } else {
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 5f){location ->
+                Timber.d("Location: ${location.latitude} ${location.longitude}")
+                val locationString = "${location.latitude},${location.longitude}"
+                getWeatherData(apiKey, locationString)
+            }
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == locationPermissionCode) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(requireContext(), "Permission Granted", Toast.LENGTH_SHORT).show()
+            }
+            else {
+                Toast.makeText(requireContext(), "Permission Denied", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun getWeatherData(apiKey: String, location: String) {
         Timber.d("getWeatherData Running")
         homeViewModel.getWeatherData(apiKey, location)
         homeViewModel.weatherData.observe(viewLifecycleOwner) { weatherResponse ->
@@ -68,36 +101,6 @@ class HomeFragment : Fragment() {
                 }
             }
 
-        }
-    }
-
-    private fun isLocationPermissionGranted() {
-        Timber.d("isLocationPermissionGranted Running")
-        if (ActivityCompat.checkSelfPermission(
-                requireContext(),
-                android.Manifest.permission.ACCESS_COARSE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                requireContext(),
-                android.Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(
-                requireActivity(),
-                arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION),
-                101
-            )
-        }
-        mFusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
-            location?.let {
-                var latitude = it.latitude
-                var longitude = it.longitude
-                var location = "$latitude, $longitude"
-                Timber.d("Location Found $location")
-
-                getWeatherData(apiKey, location)
-            } ?: run {
-
-            }
         }
     }
 }
