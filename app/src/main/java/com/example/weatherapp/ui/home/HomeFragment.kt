@@ -47,6 +47,15 @@ class HomeFragment : Fragment() {
 
 
         binding.swipeRefresh.setOnRefreshListener {
+            binding.apply {
+                progressHome.visibility = View.VISIBLE
+                tempMin.visibility = View.GONE
+                tempMax.visibility = View.GONE
+                detailsContainer.visibility = View.GONE
+                temp.visibility = View.GONE
+                status.visibility = View.GONE
+                addressContainer.visibility = View.GONE
+            }
             getLocation(apiKey)
             Timber.d("Swipe Refresh")
             binding.swipeRefresh.isRefreshing = false
@@ -56,15 +65,21 @@ class HomeFragment : Fragment() {
 
     private fun getLocation(apiKey: String) {
         locationManager = requireContext().getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        if ((ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)) {
-            ActivityCompat.requestPermissions(requireActivity(), arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), locationPermissionCode)
+        if (!isLocationEnabled()) {
+            Toast.makeText(requireContext(), "Please Turn on Your device Location", Toast.LENGTH_SHORT).show()
         } else {
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 5f){location ->
-                Timber.d("Location: ${location.latitude} ${location.longitude}")
-                val locationString = "${location.latitude},${location.longitude}"
-                getWeatherData(apiKey, locationString)
+            Toast.makeText(this.requireContext(), "Wait For 15s", Toast.LENGTH_LONG).show()
+            if ((ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)) {
+                ActivityCompat.requestPermissions(requireActivity(), arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), locationPermissionCode)
+            } else {
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 5f){location ->
+                    Timber.d("Location: ${location.latitude} ${location.longitude}")
+                    val locationString = "${location.latitude},${location.longitude}"
+                    getWeatherData(apiKey, locationString)
+                }
             }
         }
+
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
@@ -79,6 +94,27 @@ class HomeFragment : Fragment() {
         }
     }
 
+    private fun isLocationEnabled(): Boolean {
+        val lm = requireContext().getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        var gpsEnabled = false
+        var networkEnabled = false
+
+        try {
+            gpsEnabled = lm.isProviderEnabled(LocationManager.GPS_PROVIDER)
+        } catch (ex: Exception) {
+            Timber.e(ex)
+        }
+
+        try {
+            networkEnabled = lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
+        } catch (ex: Exception) {
+            Timber.e(ex)
+        }
+
+        return gpsEnabled || networkEnabled
+    }
+
+
     private fun getWeatherData(apiKey: String, location: String) {
         Timber.d("getWeatherData Running")
         homeViewModel.getWeatherData(apiKey, location)
@@ -87,6 +123,12 @@ class HomeFragment : Fragment() {
                 Timber.d("weatherResponse True")
                 binding.apply {
                     progressHome.visibility = View.GONE
+                    tempMin.visibility = View.VISIBLE
+                    tempMax.visibility = View.VISIBLE
+                    detailsContainer.visibility = View.VISIBLE
+                    temp.visibility = View.VISIBLE
+                    status.visibility = View.VISIBLE
+                    addressContainer.visibility = View.VISIBLE
                     address.text = weatherResponse.location.name
                     //Timber.d("Check Address: ${binding.address.text} and Name: ${weatherResponse.location.name}")
                     updatedAt.text = weatherResponse.current.lastUpdated
