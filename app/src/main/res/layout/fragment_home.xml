@@ -111,7 +111,7 @@
         <!-- Details Container -->
         <LinearLayout
             android:id="@+id/detailsContainer"
-            android:layout_width="361dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
