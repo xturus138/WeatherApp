@@ -23,7 +23,7 @@ data class Location(
 	val localtimeEpoch: Int,
 
 	@field:SerializedName("name")
-	val name: String,
+	val name: String, 
 
 	@field:SerializedName("lon")
 	val lon: Double,

@@ -18,21 +18,35 @@
             android:id="@+id/progress_home"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:progressTint="@color/text"
             android:visibility="gone"
-            android:progressTint = "@android:color/white"
-            app:layout_constraintTop_toTopOf="parent"
+            android:indeterminate="true"
+            android:indeterminateDrawable="@drawable/progress_bg"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- Location Container -->
+        <ImageButton
+            android:id="@+id/locationLogo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="14dp"
+            android:visibility="gone"
+            android:background="@drawable/loc_logo"
+            android:contentDescription="location"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <!-- Address Container -->
         <LinearLayout
             android:id="@+id/addressContainer"
             android:layout_width="0dp"
-            android:visibility="gone"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:orientation="vertical"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -41,17 +55,17 @@
                 android:id="@+id/address"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                tools:text="DHAKA, BD"
                 android:textColor="@color/text"
-                android:textSize="24sp" />
+                android:textSize="24sp"
+                tools:text="DHAKA, BD" />
 
             <TextView
                 android:id="@+id/updated_at"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                tools:text="20 April 2012, 20:08 PM"
                 android:textColor="@color/text"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                tools:text="20 April 2012, 20:08 PM" />
         </LinearLayout>
 
         <!-- Overview Container -->
@@ -70,10 +84,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                tools:text="Clear Sky"
-                android:visibility="gone"
                 android:textColor="@color/text"
-                android:textSize="18sp" />
+                android:textSize="18sp"
+                android:visibility="gone"
+                tools:text="Clear Sky" />
 
             <TextView
                 android:id="@+id/temp"
@@ -81,10 +95,10 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:fontFamily="sans-serif-thin"
-                tools:text="29°C"
-                android:visibility="gone"
                 android:textColor="@color/text"
-                android:textSize="90sp" />
+                android:textSize="90sp"
+                android:visibility="gone"
+                tools:text="29°C" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -97,8 +111,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Min Temp: 20°C"
-                    android:visibility="gone"
-                    android:textColor="@color/text" />
+                    android:textColor="@color/text"
+                    android:visibility="gone" />
 
                 <Space
                     android:layout_width="50dp"
@@ -109,8 +123,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Max Temp: 35°C"
-                    android:visibility="gone"
-                    android:textColor="@color/text" />
+                    android:textColor="@color/text"
+                    android:visibility="gone" />
             </LinearLayout>
         </LinearLayout>
 
@@ -119,11 +133,11 @@
             android:id="@+id/detailsContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="50dp"
             android:orientation="vertical"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginBottom="50dp"
             app:layout_constraintStart_toStartOf="parent">
 
             <!-- Weather Details -->
@@ -163,9 +177,9 @@
                         android:id="@+id/heat_index"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        tools:text= "100C"
                         android:textColor="@color/text"
-                        android:textSize="14sp" />
+                        android:textSize="14sp"
+                        tools:text="100C" />
                 </LinearLayout>
 
                 <Space
@@ -202,9 +216,9 @@
                         android:id="@+id/wind_chill"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        tools:text="-10C"
                         android:textColor="@color/text"
-                        android:textSize="14sp" />
+                        android:textSize="14sp"
+                        tools:text="-10C" />
                 </LinearLayout>
 
                 <Space
@@ -241,9 +255,9 @@
                         android:id="@+id/wind"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        tools:text="06:40 AM"
                         android:textColor="@color/text"
-                        android:textSize="14sp" />
+                        android:textSize="14sp"
+                        tools:text="06:40 AM" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -287,9 +301,9 @@
                         android:id="@+id/pressure"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        tools:text="70SPI"
                         android:textColor="@color/text"
-                        android:textSize="14sp" />
+                        android:textSize="14sp"
+                        tools:text="70SPI" />
                 </LinearLayout>
 
                 <Space
@@ -326,9 +340,9 @@
                         android:id="@+id/humidity"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        tools:text="70%"
                         android:textColor="@color/text"
-                        android:textSize="14sp" />
+                        android:textSize="14sp"
+                        tools:text="70%" />
                 </LinearLayout>
 
                 <Space
@@ -365,9 +379,9 @@
                         android:id="@+id/visibility"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        tools:text="70%"
                         android:textColor="@color/text"
-                        android:textSize="14sp" />
+                        android:textSize="14sp"
+                        tools:text="70%" />
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>
