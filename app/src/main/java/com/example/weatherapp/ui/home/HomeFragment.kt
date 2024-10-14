@@ -8,18 +8,26 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.ImageButton
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import com.example.weatherapp.R
 import com.example.weatherapp.databinding.FragmentHomeBinding
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.Priority
+import com.google.android.gms.tasks.CancellationTokenSource
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 class HomeFragment : Fragment() {
@@ -28,14 +36,14 @@ class HomeFragment : Fragment() {
     private val homeViewModel: HomeViewModel by viewModels()
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var buttonClick : ImageButton
-    //private lateinit var locationManager: LocationManager
-    private val locationPermissionCode = 2
+    private lateinit var requestPermissionLauncher: ActivityResultLauncher<String>
     private val apiKey = "8f589eb621634745aef75038240910"
+    private val LOCATION_PERMISSION_REQUEST_CODE = 101
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -47,48 +55,40 @@ class HomeFragment : Fragment() {
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
 
+
+        requestPermissionLauncher = registerForActivityResult(
+            ActivityResultContracts.RequestPermission()
+        ) { isGranted: Boolean ->
+            if (isGranted) {
+                getLocation(apiKey)
+                Toast.makeText(requireContext(), "Permission Granted", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(requireContext(), "Permission Denied, Please allow location permission", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+
         binding.progressHome.visibility = View.VISIBLE
         buttonClick()
         getLocation(apiKey)
-
 
         binding.swipeRefresh.setOnRefreshListener {
             binding.apply {
                 progressHome.visibility = View.VISIBLE
                 hideUi()
             }
-            buttonClick()
             getLocation(apiKey)
             Timber.d("Swipe Refresh")
             binding.swipeRefresh.isRefreshing = false
         }
-
     }
 
-    /*private fun getLocation(apiKey: String) {
-        locationManager = requireContext().getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        if (!isLocationEnabled()) {
-            Toast.makeText(requireContext(), "Please Turn on Your device Location", Toast.LENGTH_SHORT).show()
-        } else {
-            Toast.makeText(this.requireContext(), "Wait For 1 Minutes", Toast.LENGTH_LONG).show()
-            if ((ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)) {
-                ActivityCompat.requestPermissions(requireActivity(), arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), locationPermissionCode)
-            } else {
-                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 1f){location ->
-                    Timber.d("Location: ${location.latitude} ${location.longitude}")
-                    val locationString = "${location.latitude},${location.longitude}"
-                    getWeatherData(apiKey, locationString)
-                }
-            }
-        }
-
-    }*/
-
     private fun buttonClick(){
+        Timber.d("buttonClick Running")
         buttonClick = binding.locationLogo
         buttonClick.setOnClickListener{
             val dialog = BottomSheetDialog(requireContext())
-            val view=layoutInflater.inflate(R.layout.dialog_layout,null)
+            val view = layoutInflater.inflate(R.layout.dialog_layout, null)
             dialog.setContentView(view)
             dialog.show()
         }
@@ -96,11 +96,15 @@ class HomeFragment : Fragment() {
 
     private fun getLocation(apiKey: String) {
         if (!isLocationEnabled()) {
+            Timber.d("Location Is Disabled")
             Toast.makeText(requireContext(), "Please Turn on Your device Location", Toast.LENGTH_SHORT).show()
         } else {
-            if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(requireActivity(), arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), locationPermissionCode)
+            Timber.d("Location Is Enabled Function 1")
+            if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+                requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
             } else {
+                Timber.d("Location Is Enabled Function 2")
                 fusedLocationClient.lastLocation
                     .addOnSuccessListener(requireActivity()) { location ->
                         if (location != null) {
@@ -108,48 +112,61 @@ class HomeFragment : Fragment() {
                             val locationString = "${location.latitude},${location.longitude}"
                             getWeatherData(apiKey, locationString)
                         } else {
-                            Toast.makeText(
-                                requireContext(),
-                                "Unable to get location!",
-                                Toast.LENGTH_SHORT
-                            ).show()
+                            newLocation()
+                            Toast.makeText(requireContext(), "Please Wait", Toast.LENGTH_SHORT).show()
                         }
                     }
             }
         }
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == locationPermissionCode) {
-            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(requireContext(), "Permission Granted", Toast.LENGTH_SHORT).show()
+    //dari medium
+    private fun newLocation() {
+        if (ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            lifecycleScope.launch(Dispatchers.IO) {
+                try {
+                    val priority = Priority.PRIORITY_BALANCED_POWER_ACCURACY
+                    val result = fusedLocationClient.getCurrentLocation(
+                        priority,
+                        CancellationTokenSource().token,
+                    ).await()
+
+                    result?.let { fetchedLocation ->
+                        withContext(Dispatchers.Main) {
+                            val locationString = "${fetchedLocation.latitude},${fetchedLocation.longitude}"
+                            getWeatherData(apiKey, locationString)
+                        }
+                    }
+                } catch (e: SecurityException) {
+                    Timber.e("LocationError", "Security exception while fetching location", e)
+                }
             }
-            else {
-                Toast.makeText(requireContext(), "Permission Denied", Toast.LENGTH_SHORT).show()
-            }
+        } else {
+            ActivityCompat.requestPermissions(
+                requireActivity(),
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                LOCATION_PERMISSION_REQUEST_CODE
+            )
         }
     }
 
     private fun isLocationEnabled(): Boolean {
         val lm = requireContext().getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        var gpsEnabled = false
-        var networkEnabled = false
-
-        try {
-            gpsEnabled = lm.isProviderEnabled(LocationManager.GPS_PROVIDER)
+        return try {
+            lm.isProviderEnabled(LocationManager.GPS_PROVIDER) || lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
         } catch (ex: Exception) {
             Timber.e(ex)
+            false
         }
-
-        try {
-            networkEnabled = lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
-        } catch (ex: Exception) {
-            Timber.e(ex)
-        }
-
-        return gpsEnabled || networkEnabled
     }
+
+
+
+
 
 
     private fun getWeatherData(apiKey: String, location: String) {
@@ -162,7 +179,6 @@ class HomeFragment : Fragment() {
                     progressHome.visibility = View.GONE
                     visibleUi()
                     address.text = weatherResponse.location.name
-                    //Timber.d("Check Address: ${binding.address.text} and Name: ${weatherResponse.location.name}")
                     updatedAt.text = weatherResponse.current.lastUpdated
                     status.text = weatherResponse.current.condition.text
                     temp.text = weatherResponse.current.tempC.toString()
@@ -174,11 +190,10 @@ class HomeFragment : Fragment() {
                     visibility.text = weatherResponse.current.cloud.toString()
                 }
             }
-
         }
     }
 
-    private fun visibleUi(){
+    private fun visibleUi() {
         binding.apply {
             locationLogo.visibility = View.VISIBLE
             tempMin.visibility = View.VISIBLE
@@ -190,8 +205,8 @@ class HomeFragment : Fragment() {
         }
     }
 
-    private fun hideUi(){
-        binding.apply{
+    private fun hideUi() {
+        binding.apply {
             locationLogo.visibility = View.GONE
             tempMin.visibility = View.GONE
             tempMax.visibility = View.GONE
@@ -201,4 +216,7 @@ class HomeFragment : Fragment() {
             addressContainer.visibility = View.GONE
         }
     }
+
+
 }
+

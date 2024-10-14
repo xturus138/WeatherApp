@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    id("kotlin-parcelize")
 }
 
 android {
@@ -50,6 +51,7 @@ android {
 }
 
 dependencies {
+    implementation (libs.play.services.location.v2101)
     implementation (libs.places)
     implementation(libs.play.services.location)
     implementation(libs.androidx.swiperefreshlayout)

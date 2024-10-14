@@ -4,7 +4,7 @@
     android:id="@+id/rvItem"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:textAlignment="center"
+    android:textAlignment="textStart"
     android:paddingTop="8dp"
     android:paddingBottom="8dp"
     android:textAppearance="?android:attr/textAppearanceListItemSmall"
