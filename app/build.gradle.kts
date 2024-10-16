@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    id("kotlin-parcelize")
 }
 
 android {
@@ -18,7 +19,14 @@ android {
     }
 
     buildTypes {
+        debug {
+            buildConfigField("String", "BASE_URL", "\"https://api.weatherapi.com/v1/\"")
+            buildConfigField("String", "API_KEY", "\"8f589eb621634745aef75038240910\"")
+        }
         release {
+            buildConfigField("String", "BASE_URL", "\"https://api.weatherapi.com/v1/\"")
+            buildConfigField("String", "API_KEY", "\"8f589eb621634745aef75038240910\"")
+
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -26,6 +34,7 @@ android {
             )
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
@@ -37,11 +46,19 @@ android {
     buildFeatures {
         viewBinding = true
         dataBinding = true
+        buildConfig = true
     }
 }
 
 dependencies {
-
+    implementation (libs.play.services.location.v2101)
+    implementation (libs.places)
+    implementation(libs.play.services.location)
+    implementation(libs.androidx.swiperefreshlayout)
+    implementation(libs.glide)
+    implementation(libs.retrofit)
+    implementation(libs.retrofit2.converter.gson)
+    implementation(libs.logging.interceptor)
     implementation (libs.androidx.navigation.fragment.ktx)
     implementation (libs.androidx.navigation.ui.ktx)
     implementation(libs.timber)

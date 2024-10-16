@@ -1,21 +1,21 @@
-package com.example.weatherapp
+package com.example.weatherapp.ui.history
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.example.weatherapp.databinding.FragmentHomeBinding
+import com.example.weatherapp.databinding.FragmentHistoryBinding
 
-class HomeFragment : Fragment() {
+class HistoryFragment : Fragment() {
 
-    private lateinit var binding: FragmentHomeBinding
+    private lateinit var binding: FragmentHistoryBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View?{
-        binding =  FragmentHomeBinding.inflate(inflater, container, false)
+    ): View {
+        binding =  FragmentHistoryBinding.inflate(inflater, container, false)
         return binding.root
     }
 
