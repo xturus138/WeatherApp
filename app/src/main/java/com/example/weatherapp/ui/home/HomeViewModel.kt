@@ -3,6 +3,7 @@ package com.example.weatherapp.ui.home
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.weatherapp.BuildConfig
 import com.example.weatherapp.source.response.WeatherResponse
 import com.example.weatherapp.source.retrofit.ApiConfig
 import retrofit2.Call
@@ -13,12 +14,12 @@ import timber.log.Timber
 class HomeViewModel : ViewModel() {
 
     private val _weatherData = MutableLiveData<WeatherResponse>()
+    private val _errorMessage = MutableLiveData<String>()
     val weatherData: LiveData<WeatherResponse> = _weatherData
+    val errorMessage: LiveData<String> = _errorMessage
 
-    fun getWeatherData(apiKey: String, location: String) {
-        Timber.d("API call with apiKey: $apiKey and location: $location")
-
-        val client = ApiConfig.getApiService().getWeather(apiKey, location)
+    fun getWeatherData(location: String, days: Int) {
+        val client = ApiConfig.getApiService().getWeather(BuildConfig.API_KEY, location, days)
         client.enqueue(object : Callback<WeatherResponse> {
             override fun onResponse(
                 call: Call<WeatherResponse>,
@@ -28,7 +29,9 @@ class HomeViewModel : ViewModel() {
                     Timber.d("API response success: ${response.body()}")
                     _weatherData.value = response.body()
                 } else {
-                    Timber.e("API response failed: ${response.errorBody()?.string()}")
+                    val errorBody = response.errorBody()?.string()
+                    Timber.e("API response failed: $errorBody")
+                    _errorMessage.value = "Failed to load data: $errorBody"
                 }
             }
 
