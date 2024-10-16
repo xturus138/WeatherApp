@@ -40,8 +40,8 @@ class HomeFragment : Fragment() {
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var buttonClick : ImageButton
     private lateinit var requestPermissionLauncher: ActivityResultLauncher<String>
-    private val apiKey = "8f589eb621634745aef75038240910"
     private val LOCATION_PERMISSION_REQUEST_CODE = 101
+    private val days = 1
     private val homeViewModel: HomeViewModel by viewModels()
 
 
@@ -63,24 +63,31 @@ class HomeFragment : Fragment() {
             ActivityResultContracts.RequestPermission()
         ) { isGranted: Boolean ->
             if (isGranted) {
-                getLocation(apiKey)
+                getLocation()
                 Toast.makeText(requireContext(), "Permission Granted", Toast.LENGTH_SHORT).show()
             } else {
                 Toast.makeText(requireContext(), "Permission Denied, Please allow location permission", Toast.LENGTH_SHORT).show()
             }
         }
 
+        homeViewModel.errorMessage.observe(viewLifecycleOwner) { errorMessage ->
+            if (!errorMessage.isNullOrEmpty()) {
+                Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_SHORT).show()
+            }
+        }
+
 
         binding.progressHome.visibility = View.VISIBLE
         buttonClick()
-        getLocation(apiKey)
+        getLocation()
 
         binding.swipeRefresh.setOnRefreshListener {
             binding.apply {
                 progressHome.visibility = View.VISIBLE
                 hideUi()
             }
-            getLocation(apiKey)
+            Toast.makeText(requireContext(), "Please Wait", Toast.LENGTH_SHORT).show()
+            getLocation()
             Timber.d("Swipe Refresh")
             binding.swipeRefresh.isRefreshing = false
         }
@@ -103,12 +110,12 @@ class HomeFragment : Fragment() {
                 Toast.makeText(requireContext(), "Please Enter Your Location", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             } else {
-                getWeatherData(apiKey, valueEdit)
+                getWeatherData(valueEdit, days)
                 Timber.d("editText Value: $valueEdit")
                 Toast.makeText(requireContext(),"Value is: $valueEdit, Please Wait", Toast.LENGTH_SHORT).show()
             }
             dialog.dismiss()
-            Timber.d("Dialog Dismiiss")
+            Timber.d("Dialog Dismiis")
         }
         dialog.show()
     }
@@ -123,7 +130,7 @@ class HomeFragment : Fragment() {
         }
     }
 
-    private fun getLocation(apiKey: String) {
+    private fun getLocation() {
         if (!isLocationEnabled()) {
             Timber.d("Location Is Disabled")
             Toast.makeText(requireContext(), "Please Turn on Your device Location", Toast.LENGTH_SHORT).show()
@@ -139,7 +146,7 @@ class HomeFragment : Fragment() {
                         if (location != null) {
                             Timber.d("Location: ${location.latitude} ${location.longitude}")
                             val locationString = "${location.latitude},${location.longitude}"
-                            getWeatherData(apiKey, locationString)
+                            getWeatherData(locationString, days)
                         } else {
                             newLocation()
                             Toast.makeText(requireContext(), "Please Wait", Toast.LENGTH_SHORT).show()
@@ -166,7 +173,7 @@ class HomeFragment : Fragment() {
                     result?.let { fetchedLocation ->
                         withContext(Dispatchers.Main) {
                             val locationString = "${fetchedLocation.latitude},${fetchedLocation.longitude}"
-                            getWeatherData(apiKey, locationString)
+                            getWeatherData(locationString, days)
                         }
                     }
                 } catch (e: SecurityException) {
@@ -193,12 +200,14 @@ class HomeFragment : Fragment() {
     }
 
 
-    private fun getWeatherData(apiKey: String, location: String) {
+    private fun getWeatherData(location: String, days: Int) {
         Timber.d("getWeatherData Running")
-        homeViewModel.getWeatherData(apiKey, location)
+        homeViewModel.getWeatherData(location, days)
         homeViewModel.weatherData.observe(viewLifecycleOwner) { weatherResponse ->
             if (weatherResponse != null) {
                 Timber.d("weatherResponse Is True!")
+                val minTemp = weatherResponse.forecast.forecastday[0].day.mintempC.toInt()
+                val maxTemp = weatherResponse.forecast.forecastday[0].day.maxtempC.toInt()
                 binding.apply {
                     progressHome.visibility = View.GONE
                     visibleUi()
@@ -206,6 +215,8 @@ class HomeFragment : Fragment() {
                     updatedAt.text = weatherResponse.current.lastUpdated
                     status.text = weatherResponse.current.condition.text
                     temp.text = weatherResponse.current.tempC.toString()
+                    tempMin.text = getString(R.string.min_temp_text, minTemp)
+                    tempMax.text = getString(R.string.max_temp_text, maxTemp)
                     heatIndex.text = weatherResponse.current.heatindexC.toString()
                     windChill.text = weatherResponse.current.windchillC.toString()
                     wind.text = weatherResponse.current.windKph.toString()

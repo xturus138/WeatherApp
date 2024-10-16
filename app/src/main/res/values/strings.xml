@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">WeatherApp</string>
     <string name="icon_desc">Coba</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="min_temp_text">Min Temp: %1$d°C</string>
+    <string name="max_temp_text">Max Temp: %1$d°C</string>
 </resources>
