@@ -1,13 +1,19 @@
 package com.example.weatherapp.ui.home
 
 import android.Manifest
+import android.app.Dialog
 import android.content.Context
 import android.content.pm.PackageManager
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.location.LocationManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.Window
+import android.widget.Button
+import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
@@ -23,7 +29,6 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.google.android.gms.tasks.CancellationTokenSource
-import com.google.android.material.bottomsheet.BottomSheetDialog
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
@@ -31,14 +36,14 @@ import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 class HomeFragment : Fragment() {
-
     private lateinit var binding: FragmentHomeBinding
-    private val homeViewModel: HomeViewModel by viewModels()
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var buttonClick : ImageButton
     private lateinit var requestPermissionLauncher: ActivityResultLauncher<String>
     private val apiKey = "8f589eb621634745aef75038240910"
     private val LOCATION_PERMISSION_REQUEST_CODE = 101
+    private val homeViewModel: HomeViewModel by viewModels()
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -54,8 +59,6 @@ class HomeFragment : Fragment() {
         Timber.d("onViewCreated Running")
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
-
-
         requestPermissionLauncher = registerForActivityResult(
             ActivityResultContracts.RequestPermission()
         ) { isGranted: Boolean ->
@@ -83,14 +86,40 @@ class HomeFragment : Fragment() {
         }
     }
 
+
+    private fun showCustomDialog() {
+        val dialog = Dialog(requireContext())
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setCancelable(true)
+        dialog.setContentView(R.layout.modal_search)
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog.window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        val editText = dialog.findViewById<EditText>(R.id.editText)
+        val button = dialog.findViewById<Button>(R.id.inputData)
+        button.setOnClickListener {
+            Timber.d("Button Clicked Custom Dialog")
+            val valueEdit = editText.text.toString()
+            if (valueEdit.isEmpty()) {
+                Toast.makeText(requireContext(), "Please Enter Your Location", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            } else {
+                getWeatherData(apiKey, valueEdit)
+                Timber.d("editText Value: $valueEdit")
+                Toast.makeText(requireContext(),"Value is: $valueEdit, Please Wait", Toast.LENGTH_SHORT).show()
+            }
+            dialog.dismiss()
+            Timber.d("Dialog Dismiiss")
+        }
+        dialog.show()
+    }
+
     private fun buttonClick(){
         Timber.d("buttonClick Running")
         buttonClick = binding.locationLogo
         buttonClick.setOnClickListener{
-            val dialog = BottomSheetDialog(requireContext())
-            val view = layoutInflater.inflate(R.layout.dialog_layout, null)
-            dialog.setContentView(view)
-            dialog.show()
+            Timber.d("buttonClick Clicked")
+            showCustomDialog()
+
         }
     }
 
@@ -120,7 +149,6 @@ class HomeFragment : Fragment() {
         }
     }
 
-    //dari medium
     private fun newLocation() {
         if (ContextCompat.checkSelfPermission(
                 requireContext(),
@@ -165,16 +193,12 @@ class HomeFragment : Fragment() {
     }
 
 
-
-
-
-
     private fun getWeatherData(apiKey: String, location: String) {
         Timber.d("getWeatherData Running")
         homeViewModel.getWeatherData(apiKey, location)
         homeViewModel.weatherData.observe(viewLifecycleOwner) { weatherResponse ->
             if (weatherResponse != null) {
-                Timber.d("weatherResponse True")
+                Timber.d("weatherResponse Is True!")
                 binding.apply {
                     progressHome.visibility = View.GONE
                     visibleUi()
@@ -216,7 +240,6 @@ class HomeFragment : Fragment() {
             addressContainer.visibility = View.GONE
         }
     }
-
 
 }
 
