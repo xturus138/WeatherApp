@@ -4,4 +4,31 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="min_temp_text">Min Temp: %1$d°C</string>
     <string name="max_temp_text">Max Temp: %1$d°C</string>
+    <string name="time_item_forecast">Sekarang</string>
+    <string name="celcius_item_forecast">10°C</string>
+
+
+    <string-array name="time_labels">
+        <item>08:00</item>
+        <item>12:00</item>
+        <item>16:00</item>
+        <item>20:00</item>
+        <item>00:00</item>
+    </string-array>
+
+    <string-array name="temperature_values">
+        <item>20°C</item>
+        <item>25°C</item>
+        <item>22°C</item>
+        <item>19°C</item>
+        <item>18°C</item>
+    </string-array>
+
+    <integer-array name="weather_icons">
+        <item>@drawable/cloud</item>
+        <item>@drawable/cloud</item>
+        <item>@drawable/cloud</item>
+        <item>@drawable/cloud</item>
+        <item>@drawable/cloud</item>
+    </integer-array>
 </resources>
