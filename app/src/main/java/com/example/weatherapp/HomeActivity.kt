@@ -1,15 +1,10 @@
-package com.example.weatherapp.ui.home
+package com.example.weatherapp
 
-import android.content.Context
-import android.location.LocationManager
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
-import com.example.weatherapp.R
 import com.example.weatherapp.databinding.ActivityHomeBinding
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
 
 class HomeActivity : AppCompatActivity() {
 

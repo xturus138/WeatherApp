@@ -33,7 +33,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="14dp"
-            android:visibility="gone"
+            android:visibility="visible"
             android:background="@drawable/loc_logo"
             android:contentDescription="location"
             app:layout_constraintEnd_toEndOf="parent"
@@ -46,7 +46,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:orientation="vertical"
-            android:visibility="gone"
+            android:visibility="visible"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -68,7 +68,7 @@
                 tools:text="20 April 2012, 20:08 PM" />
         </LinearLayout>
 
-        <!-- Overview Container -->
+
         <LinearLayout
             android:id="@+id/overviewContainer"
             android:layout_width="0dp"
@@ -86,7 +86,7 @@
                 android:layout_gravity="center"
                 android:textColor="@color/text"
                 android:textSize="18sp"
-                android:visibility="gone"
+                android:visibility="visible"
                 tools:text="Clear Sky" />
 
             <TextView
@@ -97,7 +97,7 @@
                 android:fontFamily="sans-serif-thin"
                 android:textColor="@color/text"
                 android:textSize="90sp"
-                android:visibility="gone"
+                android:visibility="visible"
                 tools:text="29°C" />
 
             <LinearLayout
@@ -112,7 +112,7 @@
                     android:layout_height="wrap_content"
                     android:text="Min Temp: 20°C"
                     android:textColor="@color/text"
-                    android:visibility="gone" />
+                    android:visibility="visible" />
 
                 <Space
                     android:layout_width="50dp"
@@ -124,7 +124,7 @@
                     android:layout_height="wrap_content"
                     android:text="Max Temp: 35°C"
                     android:textColor="@color/text"
-                    android:visibility="gone" />
+                    android:visibility="visible" />
             </LinearLayout>
         </LinearLayout>
 
@@ -135,7 +135,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="50dp"
             android:orientation="vertical"
-            android:visibility="gone"
+            android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">
