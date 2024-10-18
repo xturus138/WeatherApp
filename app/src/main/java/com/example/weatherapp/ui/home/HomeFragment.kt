@@ -8,6 +8,8 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.location.LocationManager
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,9 +23,12 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.example.weatherapp.R
+import com.example.weatherapp.SharedViewModel
 import com.example.weatherapp.databinding.FragmentHomeBinding
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -40,7 +45,7 @@ class HomeFragment : Fragment() {
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var buttonClick : ImageButton
     private lateinit var requestPermissionLauncher: ActivityResultLauncher<String>
-
+    private val model: SharedViewModel by activityViewModels()
     private val homeViewModel: HomeViewModel by viewModels()
 
 
@@ -88,10 +93,12 @@ class HomeFragment : Fragment() {
                 hideUi()
                 Timber.tag(TAG).d("Loading...")
                 loading()
+                showCustomToast("Please Wait", 1000)
             } else {
                 visibleUi()
                 Timber.tag(TAG).d("Done loading")
                 loadingFinish()
+
             }
         }
 
@@ -99,7 +106,6 @@ class HomeFragment : Fragment() {
         getLocation()
 
         binding.swipeRefresh.setOnRefreshListener {
-            Toast.makeText(requireContext(), "Please Wait", Toast.LENGTH_SHORT).show()
             getLocation()
             Timber.tag(TAG).d("Swipe Refresh")
             binding.swipeRefresh.isRefreshing = false
@@ -123,9 +129,9 @@ class HomeFragment : Fragment() {
                 Toast.makeText(requireContext(), "Please Enter Your Location", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             } else {
+                model.sendLocation(valueEdit)
                 getWeatherData(valueEdit, DAYS)
                 Timber.d("editText Value: $valueEdit")
-                Toast.makeText(requireContext(),"Value is: $valueEdit, Please Wait", Toast.LENGTH_SHORT).show()
             }
             dialog.dismiss()
             Timber.tag(TAG).d("Dialog Dismiis")
@@ -159,6 +165,7 @@ class HomeFragment : Fragment() {
                         if (location != null) {
                             Timber.tag(TAG).d("Location: ${location.latitude} ${location.longitude}")
                             val locationString = "${location.latitude},${location.longitude}"
+                            model.sendLocation(locationString)
                             getWeatherData(locationString, DAYS)
                         } else {
                             newLocation()
@@ -186,6 +193,7 @@ class HomeFragment : Fragment() {
                     result?.let { fetchedLocation ->
                         withContext(Dispatchers.Main) {
                             val locationString = "${fetchedLocation.latitude},${fetchedLocation.longitude}"
+                            model.sendLocation(locationString)
                             getWeatherData(locationString, DAYS)
                         }
                     }
@@ -202,7 +210,14 @@ class HomeFragment : Fragment() {
         }
     }
 
-
+    //diambil dari geeksforgeeks
+    private fun showCustomToast(message: String, durationInMillis: Long) {
+        val toast = Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT)
+        toast.show()
+        Handler(Looper.getMainLooper()).postDelayed({
+            toast.cancel()
+        }, durationInMillis)
+    }
 
 
     private fun getWeatherData(location: String, days: Int) {

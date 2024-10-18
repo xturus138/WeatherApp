@@ -7,6 +7,7 @@ import com.example.weatherapp.BuildConfig
 import com.example.weatherapp.ListForecastAdapter
 import com.example.weatherapp.databinding.FragmentForecastBinding
 import com.example.weatherapp.source.response.ForecastdayItem
+import com.example.weatherapp.source.response.Location
 import com.example.weatherapp.source.response.WeatherResponse
 import com.example.weatherapp.source.retrofit.ApiConfig
 import retrofit2.Call
@@ -21,6 +22,8 @@ class ForecastViewModel : ViewModel() {
     val errorMessage: LiveData<String> = _errorMessage
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
+    private val _locationResponse = MutableLiveData<String>()
+    val locationResponse: LiveData<String> = _locationResponse
 
     fun getForecastData(location: String, days: Int) {
         if (location.isEmpty()) {
@@ -39,6 +42,7 @@ class ForecastViewModel : ViewModel() {
                     val weatherResponse = response.body()
                     if (weatherResponse != null) {
                         _forecastList.value = weatherResponse.forecast.forecastday
+                        _locationResponse.value = weatherResponse.location.name
                         Timber.d("API response forecast list success!")
 
                     } else {
