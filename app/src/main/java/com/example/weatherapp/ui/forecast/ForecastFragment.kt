@@ -5,20 +5,28 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weatherapp.ListForecastAdapter
 import com.example.weatherapp.R
 import com.example.weatherapp.databinding.FragmentForecastBinding
-import com.example.weatherapp.source.response.Weather
+import com.example.weatherapp.source.retrofit.ApiConfig
 import timber.log.Timber
 
 
 class ForecastFragment : Fragment() {
 
     private lateinit var binding: FragmentForecastBinding
-    private lateinit var rvWeather: RecyclerView
-    private val list = ArrayList<Weather>()
+    private val forecastViewModel: ForecastViewModel by viewModels()
+    private lateinit var adapter: ListForecastAdapter
+
+    companion object{
+        private const val TAG = "ForecastFragment"
+        private const val LOCATION = "Bandung"
+        private const val DAYS = 7
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -31,32 +39,55 @@ class ForecastFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        adapter = ListForecastAdapter()
 
-        rvWeather = binding.recyclerView
-        rvWeather.setHasFixedSize(true)
+        val layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        binding.rvWeather.layoutManager = layoutManager
 
-        list.addAll(getListWeather())
-        showRecycleView()
+        /*val itemDecoration = DividerItemDecoration(requireContext(), layoutManager.orientation)
+        binding.rvWeather.addItemDecoration(itemDecoration)*/
 
-    }
+        binding.rvWeather.adapter = adapter
 
-    private fun getListWeather(): ArrayList<Weather> {
-        val dataTime = resources.getStringArray(R.array.time_labels)
-        val dataTemperature = resources.getStringArray(R.array.temperature_values)
-        val dataPhoto = resources.obtainTypedArray(R.array.weather_icons)
-        val listWeather = ArrayList<Weather>()
-        for (i in dataTime.indices) {
-            val weather = Weather(dataTime[i], dataTemperature[i], dataPhoto.getResourceId(i, -1))
-            listWeather.add(weather)
+        showForecast(LOCATION, DAYS)
+
+        forecastViewModel.forecastList.observe(viewLifecycleOwner) { forecast ->
+            adapter.submitList(forecast)
         }
-        return listWeather
+
+        forecastViewModel.errorMessage.observe(viewLifecycleOwner) { errorMessage ->
+            Timber.e(errorMessage)
+        }
+
+        forecastViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
+            if (isLoading) {
+                Timber.d("Loading...")
+                showLoading()
+            } else {
+                Timber.d("Done loading")
+                stopLoading()
+            }
+        }
+
+
+
     }
 
-    private fun showRecycleView(){
-        rvWeather.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-        val listForecastAdapter = ListForecastAdapter(getListWeather())
-        rvWeather.adapter = listForecastAdapter
-
+    private fun showForecast(location: String, days: Int) {
+        showLoading()
+        forecastViewModel.getForecastData(location, days)
+        stopLoading()
     }
+
+    private fun showLoading(){
+        binding.progressForecast.visibility = View.VISIBLE
+    }
+
+    private fun stopLoading(){
+        binding.progressForecast.visibility = View.GONE
+    }
+
+
+
 
 }

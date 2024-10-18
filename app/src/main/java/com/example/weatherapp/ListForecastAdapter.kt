@@ -5,30 +5,49 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.weatherapp.source.response.Weather
+import com.bumptech.glide.Glide
+import com.example.weatherapp.databinding.FragmentForecastBinding
+import com.example.weatherapp.databinding.ItemForecastBinding
+import com.example.weatherapp.source.response.ForecastdayItem
 
-class ListForecastAdapter(private val listForecast: ArrayList<Weather>): RecyclerView.Adapter<ListForecastAdapter.ViewHolder>(){
+class ListForecastAdapter:ListAdapter<ForecastdayItem, ListForecastAdapter.MyViewHolder>(DIFF_CALLBACK){
 
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view: View = LayoutInflater.from(parent.context).inflate(R.layout.item_forecast, parent, false)
-        return ViewHolder(view)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
+        val binding: ItemForecastBinding = ItemForecastBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return MyViewHolder(binding)
     }
 
-    override fun getItemCount() = listForecast.size
-
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val (time, temperature, photo) = listForecast[position]
-        holder.imagePhoto.setImageResource(photo)
-        holder.textTime.text = time
-        holder.textTemperature.text = temperature
+    override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
+        val forecastItem = getItem(position)
+        holder.bind(forecastItem)
     }
 
-    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val imagePhoto: ImageView = itemView.findViewById(R.id.imageLogo)
-        val textTime: TextView = itemView.findViewById(R.id.textTime)
-        val textTemperature: TextView = itemView.findViewById(R.id.textTemperature)
+    class MyViewHolder(val binding: ItemForecastBinding) : RecyclerView.ViewHolder(binding.root) {
+        fun bind(forecastItem: ForecastdayItem) {
+            binding.textTime.text = forecastItem.date
+            binding.textTemperature.text = "${forecastItem.day.condition.text}"
+
+            val iconUrl = "https:${forecastItem.day.condition.icon}"
+            Glide.with(binding.root.context)
+                .load(iconUrl)
+                .into(binding.imageLogo)
+        }
+    }
+
+    companion object{
+        val DIFF_CALLBACK = object : DiffUtil.ItemCallback<ForecastdayItem>(){
+            override fun areItemsTheSame(oldItem: ForecastdayItem, newItem: ForecastdayItem): Boolean {
+                return oldItem == newItem
+            }
+
+            override fun areContentsTheSame(oldItem: ForecastdayItem, newItem: ForecastdayItem): Boolean {
+                return oldItem == newItem
+            }
+        }
     }
 
 }

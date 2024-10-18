@@ -26,7 +26,7 @@ class HomeViewModel : ViewModel() {
                 response: Response<WeatherResponse>
             ) {
                 if (response.isSuccessful) {
-                    Timber.d("API response success: ${response.body()}")
+                    Timber.d("API response current weather succsess!")
                     _weatherData.value = response.body()
                 } else {
                     val errorBody = response.errorBody()?.string()

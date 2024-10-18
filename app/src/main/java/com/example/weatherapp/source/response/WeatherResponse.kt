@@ -101,7 +101,7 @@ data class HourItem(
 	val willItSnow: Int,
 
 	@field:SerializedName("vis_km")
-	val visKm: Int,
+	val visKm: Double,
 
 	@field:SerializedName("time_epoch")
 	val timeEpoch: Int,

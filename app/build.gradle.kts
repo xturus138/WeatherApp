@@ -51,6 +51,7 @@ android {
 }
 
 dependencies {
+    implementation (libs.glide.v4120)
     implementation (libs.play.services.location.v2101)
     implementation (libs.places)
     implementation(libs.play.services.location)
