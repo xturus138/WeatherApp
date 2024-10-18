@@ -110,7 +110,7 @@
                     android:id="@+id/temp_min"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Min Temp: 20°C"
+                    tools:text="Min Temp: 20°C"
                     android:textColor="@color/text"
                     android:visibility="visible" />
 
@@ -122,7 +122,7 @@
                     android:id="@+id/temp_max"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Max Temp: 35°C"
+                    tools:text="Max Temp: 35°C"
                     android:textColor="@color/text"
                     android:visibility="visible" />
             </LinearLayout>

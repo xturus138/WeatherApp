@@ -86,7 +86,6 @@ class ForecastFragment : Fragment() {
             } else {
                 Timber.d("Done loading")
                 stopLoading()
-                showCustomToast("Done Loading", 1000)
             }
         }
 
@@ -110,10 +109,12 @@ class ForecastFragment : Fragment() {
 
     private fun showLoading(){
         binding.progressForecast.visibility = View.VISIBLE
+        binding.rvWeather.visibility = View.GONE
     }
 
     private fun stopLoading(){
         binding.progressForecast.visibility = View.GONE
+        binding.rvWeather.visibility = View.VISIBLE
         binding.swipeRefresh.isRefreshing = false
     }
 

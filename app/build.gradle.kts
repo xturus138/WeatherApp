@@ -6,12 +6,12 @@ plugins {
 
 android {
     namespace = "com.example.weatherapp"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.example.weatherapp"
         minSdk = 24
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
@@ -51,6 +51,7 @@ android {
 }
 
 dependencies {
+    implementation("androidx.core:core-splashscreen:1.2.0-alpha02")
     implementation (libs.glide.v4120)
     implementation (libs.play.services.location.v2101)
     implementation (libs.places)
