@@ -7,6 +7,42 @@
     <string name="time_item_forecast">Sekarang</string>
     <string name="celcius_item_forecast">10°C</string>
 
+    <string name="titleHeatIndex">Heat Index</string>
+    <string name="descHeatIndex">
+        The heat index measures how hot it feels by combining air temperature and humidity. It reflects
+        the "feels-like" temperature, as high humidity makes it harder for the body to cool down. This
+        is important for understanding heat-related risks, especially in hot weather.
+    </string>
+    <string name="titleWindChill">Wind Chill</string>
+    <string name="descWindChill">
+        Wind chill is a measure of how cold it feels on the skin when wind speed is combined with 
+        the air temperature. As the wind increases, it strips away body heat, making the air feel 
+        colder than the actual temperature. Wind chill is important in cold weather, as it helps 
+        indicate the risk of frostbite or hypothermia.
+    </string>
+    <string name="titleWind">Wind</string>
+    <string name="descWind">
+        Wind is the movement of air caused by the uneven heating of the Earths surface. It transfers heat,
+        moisture, and particles, influencing weather and climate patterns.
+    </string>
+    <string name="titlePressure">Pressure</string>
+    <string name="descPressure">
+        Pressure is the force of air in the atmosphere. It affects weather, with high pressure bringing clear 
+        skies and low pressure causing clouds and storms.
+    </string>
+    <string name="titleHumidity">Humidity</string>
+    <string name="descHumidity">
+        Humidity is the amount of moisture (water vapor) in the air. Higher humidity makes the air
+        feel warmer, while lower humidity feels cooler and drier. It influences weather, comfort, and
+        how we perceive temperature.
+    </string>
+    <string name="titleVisibility">Visibility</string>
+    <string name="descVisibility">
+        Visibility refers to the distance at which objects can be clearly seen. It is affected by
+        weather conditions such as fog, rain, snow, and pollution. Low visibility can impact travel
+        safety, particularly for driving and flying.
+    </string>
+    
 
     <string-array name="time_labels">
         <item>08:00</item>

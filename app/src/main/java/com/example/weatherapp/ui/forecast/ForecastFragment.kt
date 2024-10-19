@@ -99,6 +99,7 @@ class ForecastFragment : Fragment() {
         binding.swipeRefresh.setOnRefreshListener {
             Timber.d("Swipe Refresh")
             showForecast(location, DAYS)
+            binding.swipeRefresh.isRefreshing = false
         }
     }
 
@@ -115,7 +116,6 @@ class ForecastFragment : Fragment() {
     private fun stopLoading(){
         binding.progressForecast.visibility = View.GONE
         binding.rvWeather.visibility = View.VISIBLE
-        binding.swipeRefresh.isRefreshing = false
     }
 
     //diambil dari geeksforgeeks

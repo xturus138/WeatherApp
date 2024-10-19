@@ -17,6 +17,7 @@ import android.view.Window
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -101,7 +102,7 @@ class HomeFragment : Fragment() {
 
             }
         }
-
+        linearLayoutClick()
         buttonClick()
         getLocation()
 
@@ -113,7 +114,7 @@ class HomeFragment : Fragment() {
     }
 
 
-    private fun showCustomDialog() {
+    private fun showCustomDialogLocation() {
         val dialog = Dialog(requireContext())
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setCancelable(true)
@@ -139,14 +140,75 @@ class HomeFragment : Fragment() {
         dialog.show()
     }
 
+    private fun showCustomDialogInformation(title: String, desc: String){
+        val dialog = Dialog(requireContext())
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setCancelable(true)
+        dialog.setContentView(R.layout.information)
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog.window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        dialog.findViewById<TextView>(R.id.title).text = title
+        dialog.findViewById<TextView>(R.id.description).text = desc
+        dialog.show()
+    }
+
     private fun buttonClick(){
         Timber.tag(TAG).d("buttonClick Running")
         buttonClick = binding.locationLogo
         buttonClick.setOnClickListener{
             Timber.tag(TAG).d("buttonClick Clicked")
-            showCustomDialog()
+            showCustomDialogLocation()
 
         }
+    }
+
+    private fun linearLayoutClick(){
+        Timber.d("linearLayoutClick Running")
+        binding.boxHeatIndex.setOnClickListener(){
+            Timber.d("boxHeatIndex Clicked")
+            val title = getString(R.string.titleHeatIndex)
+            val desc = getString(R.string.descHeatIndex)
+            showCustomDialogInformation(title, desc)
+        }
+        binding.boxWind.setOnClickListener(){
+            Timber.d("boxWind Clicked")
+            val title = getString(R.string.titleWind)
+            val desc = getString(R.string.descWind)
+            showCustomDialogInformation(title, desc)
+        }
+        binding.boxHumidity.setOnClickListener(){
+            Timber.d("boxHumidity Clicked")
+            val title = getString(R.string.titleHumidity)
+            val desc = getString(R.string.descHumidity)
+            showCustomDialogInformation(title, desc)
+        }
+        binding.boxPressure.setOnClickListener(){
+            Timber.d("boxPressure Clicked")
+            val title = getString(R.string.titlePressure)
+            val desc = getString(R.string.descPressure)
+            showCustomDialogInformation(title, desc)
+        }
+        binding.boxWindChill.setOnClickListener(){
+            Timber.d("boxWindChill Clicked")
+            val title = getString(R.string.titleWindChill)
+            val desc = getString(R.string.descWindChill)
+            showCustomDialogInformation(title, desc)
+        }
+        binding.boxVisibility.setOnClickListener(){
+            Timber.d("boxVisibility Clicked")
+            val title = getString(R.string.titleVisibility)
+            val desc = getString(R.string.descVisibility)
+            showCustomDialogInformation(title, desc)
+        }
+    }
+
+    //diambil dari geeksforgeeks
+    private fun showCustomToast(message: String, durationInMillis: Long) {
+        val toast = Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT)
+        toast.show()
+        Handler(Looper.getMainLooper()).postDelayed({
+            toast.cancel()
+        }, durationInMillis)
     }
 
     private fun getLocation() {
@@ -208,15 +270,6 @@ class HomeFragment : Fragment() {
                 LOCATION_PERMISSION_REQUEST_CODE
             )
         }
-    }
-
-    //diambil dari geeksforgeeks
-    private fun showCustomToast(message: String, durationInMillis: Long) {
-        val toast = Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT)
-        toast.show()
-        Handler(Looper.getMainLooper()).postDelayed({
-            toast.cancel()
-        }, durationInMillis)
     }
 
 
