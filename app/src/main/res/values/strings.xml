@@ -42,7 +42,7 @@
         weather conditions such as fog, rain, snow, and pollution. Low visibility can impact travel
         safety, particularly for driving and flying.
     </string>
-    
+
 
     <string-array name="time_labels">
         <item>08:00</item>
@@ -67,4 +67,11 @@
         <item>@drawable/cloud</item>
         <item>@drawable/cloud</item>
     </integer-array>
+    <string name="appwidget_text">ForecastToday</string>
+    <string name="add_widget">Add widget</string>
+    <string name="app_widget_description">Weather For Today</string>
+
+    <string name="feature_under_development">This feature is currently under development.</string>
+    <string name="pricing_issue_message">I am facing pricing issues that prevent me from implementing this feature at this time.</string>
+    <string name="feedback_button_text">Provide Feedback</string>
 </resources>

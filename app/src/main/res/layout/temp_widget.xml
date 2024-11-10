@@ -1,0 +1,41 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widget_layout"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    tools:background="#000000"
+    android:theme="@style/Theme.WeatherApp.AppWidgetContainer">
+
+    <TextView
+        android:id="@+id/city_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:text="Bandung"
+        android:textAlignment="center"
+        android:textColor="#f0f0f0"
+        android:textSize="26sp" />
+
+    <TextView
+        android:id="@+id/temp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="30°C"
+        android:layout_margin="5dp"
+        android:textAlignment="center"
+        android:textColor="#f0f0f0"
+        android:textSize="40sp" />
+
+    <TextView
+        android:id="@+id/status"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:text="Rain Thunder"
+        android:textAlignment="center"
+        android:textColor="#f0f0f0"
+        android:textSize="20sp" />
+
+</LinearLayout>

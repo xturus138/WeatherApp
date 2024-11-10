@@ -3,6 +3,7 @@ package com.example.weatherapp.ui.home
 import android.Manifest
 import android.app.Dialog
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -31,6 +32,8 @@ import androidx.lifecycle.lifecycleScope
 import com.example.weatherapp.R
 import com.example.weatherapp.SharedViewModel
 import com.example.weatherapp.databinding.FragmentHomeBinding
+import com.example.weatherapp.source.response.WeatherResponse
+import com.example.weatherapp.widget.TempWidget
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
@@ -53,7 +56,6 @@ class HomeFragment : Fragment() {
 
     companion object{
         private const val TAG = "HomeFragment"
-        //private const val LOCATION = "Bandung"
         private const val DAYS = 1
         private const val LOCATION_PERMISSION_REQUEST_CODE = 101
     }
@@ -295,6 +297,13 @@ class HomeFragment : Fragment() {
                     humidity.text = weatherResponse.current.humidity.toString()
                     visibility.text = weatherResponse.current.cloud.toString()
                 }
+                val widgetIntent = Intent(requireContext(), TempWidget::class.java).apply {
+                    action = "UPDATE_WIDGET"
+                    putExtra("CITY_NAME", weatherResponse.location.name)
+                    putExtra("TEMPERATURE", weatherResponse.current.tempC.toString())
+                    putExtra("STATUS", weatherResponse.current.condition.text)
+                }
+                requireContext().sendBroadcast(widgetIntent)
             }
         }
     }

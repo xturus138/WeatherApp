@@ -10,16 +10,10 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.example.weatherapp.ListForecastAdapter
-import com.example.weatherapp.R
+import com.example.weatherapp.adapter.ListForecastAdapter
 import com.example.weatherapp.SharedViewModel
 import com.example.weatherapp.databinding.FragmentForecastBinding
-import com.example.weatherapp.source.retrofit.ApiConfig
 import timber.log.Timber
 
 
@@ -68,7 +62,9 @@ class ForecastFragment : Fragment() {
 
         forecastViewModel.errorMessage.observe(viewLifecycleOwner) { errorMessage ->
             Timber.e(errorMessage)
+            showCustomToast(errorMessage, 5000)
         }
+
 
         model.location.observe(viewLifecycleOwner) {
             Timber.d("Location: $it")
@@ -76,6 +72,7 @@ class ForecastFragment : Fragment() {
             showForecast(location, DAYS)
 
         }
+
 
         refresh()
 

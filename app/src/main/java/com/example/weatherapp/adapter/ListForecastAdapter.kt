@@ -1,19 +1,17 @@
-package com.example.weatherapp
+package com.example.weatherapp.adapter
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.weatherapp.databinding.FragmentForecastBinding
 import com.example.weatherapp.databinding.ItemForecastBinding
 import com.example.weatherapp.source.response.ForecastdayItem
 
-class ListForecastAdapter:ListAdapter<ForecastdayItem, ListForecastAdapter.MyViewHolder>(DIFF_CALLBACK){
+class ListForecastAdapter:ListAdapter<ForecastdayItem, ListForecastAdapter.MyViewHolder>(
+    DIFF_CALLBACK
+){
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
