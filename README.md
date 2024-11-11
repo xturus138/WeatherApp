@@ -39,6 +39,14 @@ WeatherApp is built with:
 - **API**: OpenWeatherMap (free-tier) for weather data
 - **Version Control**: Git and GitHub for progress tracking and collaboration
 
+## 🎥 Demo and Documentation
+
+Check out the app!
+- **App Links**: -
+- **Documentation**: [View the Documentation](https://docs.google.com/document/d/182MsDOHKXfYN1NRCLIar9zKbrLL98uh0hitbiPEdmhU/edit?usp=sharing)
+These links provide a walkthrough of WeatherApp's features, setup instructions, and explanations of the architecture used.
+
+
 ## 📝 Getting Started
 
 To run WeatherApp locally:
