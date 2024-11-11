@@ -44,7 +44,7 @@ WeatherApp is built with:
 Check out the app!
 - **App Links**: -
 - **Documentation**: [View the Documentation](https://docs.google.com/document/d/182MsDOHKXfYN1NRCLIar9zKbrLL98uh0hitbiPEdmhU/edit?usp=sharing)
-These links provide a walkthrough of WeatherApp's features, setup instructions, and explanations of the architecture used.
+These links provide a walkthrough of WeatherApp's features
 
 
 ## 📝 Getting Started
