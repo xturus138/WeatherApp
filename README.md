@@ -54,3 +54,4 @@ To run WeatherApp locally:
 1. **Clone the repository**:
    ```bash
    git clone https://github.com/xturus138/WeatherApp.git
+2. Done Just Run!
