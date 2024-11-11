@@ -1,2 +1,2 @@
-# WeatherApp
-# Still in development maybe 1 month done
+WeatherApp 🌦️
+Welcome to WeatherApp – an alternative weather application developed as a learning project. This app showcases a range of essential weather features, with the goal of providing a simple, functional tool for checking the weather. While not all advanced features are included due to premium API restrictions, WeatherApp makes the most of the available resources to deliver reliable and up-to-date information.
